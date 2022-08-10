@@ -1,11 +1,13 @@
-import { withTRPC } from "@trpc/next";
+import "../styles/globals.css";
+
 import type { AppRouter } from "../server/router";
 import type { AppType } from "next/dist/shared/lib/utils";
-import superjson from "superjson";
-import { SessionProvider } from "next-auth/react";
-import "../styles/globals.css";
 import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import VolumeContextProvider from "@/context/VolumeContext";
+import superjson from "superjson";
+import { withTRPC } from "@trpc/next";
 
 const MyApp: AppType = ({
   Component,
@@ -18,7 +20,9 @@ const MyApp: AppType = ({
       </Head>
       <Toaster />
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <VolumeContextProvider>
+          <Component {...pageProps} />
+        </VolumeContextProvider>
       </SessionProvider>
     </>
   );

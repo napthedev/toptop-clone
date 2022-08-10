@@ -6,6 +6,7 @@ import { FaCommentDots } from "react-icons/fa";
 import Image from "next/future/image";
 import { InView } from "react-intersection-observer";
 import { IoIosShareAlt } from "react-icons/io";
+import VideoPlayer from "./VideoPlayer";
 import { formatAccountName } from "@/utils/text";
 import { trpc } from "@/utils/trpc";
 
@@ -36,7 +37,7 @@ const Main: FC<MainProps> = ({ defaultVideos }) => {
     if (observer.current) observer.current.disconnect();
 
     let videoElements = Array.from(
-      document.querySelectorAll(".video-to-observe")
+      document.querySelectorAll("video")
     ) as HTMLVideoElement[];
 
     observer.current = new IntersectionObserver(
@@ -111,14 +112,13 @@ const Main: FC<MainProps> = ({ defaultVideos }) => {
                       : "flex-grow h-auto"
                   } rounded-md overflow-hidden`}
                 >
-                  <video
-                    className="h-full w-auto video-to-observe"
+                  <VideoPlayer
                     src={video.videoURL}
                     poster={video.coverURL}
                     preload="none"
+                    loop
                     controls={false}
-                    muted
-                  ></video>
+                  ></VideoPlayer>
                 </div>
                 <div className="flex flex-col gap-2">
                   <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
