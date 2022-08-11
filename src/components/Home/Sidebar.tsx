@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import Image from "next/future/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { FC } from "react";
 import { AiFillHome, AiOutlineHome } from "react-icons/ai";
 import { BsFillCheckCircleFill } from "react-icons/bs";
@@ -14,6 +15,7 @@ interface SidebarProps {
 }
 const Sidebar: FC<SidebarProps> = ({ suggestedAccounts }) => {
   const router = useRouter();
+  const session = useSession();
 
   return (
     <div className="w-[348px] h-[calc(100vh-60px)] overflow-y-auto flex-shrink-0 py-5">
@@ -30,7 +32,7 @@ const Sidebar: FC<SidebarProps> = ({ suggestedAccounts }) => {
             <span>For You</span>
           </a>
         </Link>
-        <Link href="/?following=1">
+        <Link href={session.data?.user ? "/?following=1" : "/sign-in"}>
           <a
             className={`flex items-center gap-2 ${
               router.query.following

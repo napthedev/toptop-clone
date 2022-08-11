@@ -38,9 +38,19 @@ export const getServerSideProps = async ({
   res,
   query,
 }: GetServerSidePropsContext) => {
-  const session = (await getServerSession(req, res, authOptions)) as any;
+  const session = await getServerSession(req, res, authOptions);
 
   const isFetchingFollowing = Boolean(Number(query.following));
+
+  if (isFetchingFollowing && !session?.user?.email) {
+    return {
+      redirect: {
+        destination: "/sign-in",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
 
   const ssg = createSSGHelpers({
     router: appRouter,
