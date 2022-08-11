@@ -1,13 +1,15 @@
 import "../styles/globals.css";
 
-import type { AppRouter } from "../server/router";
+import { withTRPC } from "@trpc/next";
 import type { AppType } from "next/dist/shared/lib/utils";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
-import VolumeContextProvider from "@/context/VolumeContext";
 import superjson from "superjson";
-import { withTRPC } from "@trpc/next";
+
+import VolumeContextProvider from "@/context/VolumeContext";
+
+import type { AppRouter } from "../server/router";
 
 const MyApp: AppType = ({
   Component,

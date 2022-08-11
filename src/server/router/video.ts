@@ -1,26 +1,40 @@
 import { TRPCError } from "@trpc/server";
-import { createRouter } from "./context";
 import { z } from "zod";
+
+import { createRouter } from "./context";
 
 export const videoRouter = createRouter()
   .query("for-you", {
     input: z.object({
       cursor: z.number().nullish(),
     }),
-    resolve: async ({ ctx: { prisma }, input }) => {
+    resolve: async ({ ctx: { prisma, session }, input }) => {
       const skip = input.cursor || 0;
       const items = await prisma.video.findMany({
         take: 10,
         skip,
         include: {
           user: true,
+          _count: { select: { likes: true, comments: true } },
         },
         orderBy: {
           createdAt: "desc",
         },
       });
+      const likes = session?.user?.id
+        ? await prisma.like.findMany({
+            where: {
+              userId: session.user.id,
+              videoId: { in: items.map((item) => item.id) },
+            },
+          })
+        : [];
+
       return {
-        items,
+        items: items.map((item) => ({
+          ...item,
+          likedByMe: likes.some((like) => like.videoId === item.id),
+        })),
         nextSkip: items.length === 0 ? null : skip + 10,
       };
     },

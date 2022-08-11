@@ -3,13 +3,14 @@ import type {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import { unstable_getServerSession as getServerSession } from "next-auth";
 
 import Main from "@/components/Home/Main";
-import Navbar from "@/components/Layout/Navbar";
 import Sidebar from "@/components/Home/Sidebar";
-import { authOptions } from "./api/auth/[...nextauth]";
-import { unstable_getServerSession as getServerSession } from "next-auth";
+import Navbar from "@/components/Layout/Navbar";
 import { prisma } from "@/server/db/client";
+
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const Home: NextPage<HomeProps> = ({ suggestedAccounts, defaultVideos }) => {
   return (
@@ -33,7 +34,7 @@ export const getServerSideProps = async ({
   req,
   res,
 }: GetServerSidePropsContext) => {
-  const session = await getServerSession(req, res, authOptions);
+  const session = (await getServerSession(req, res, authOptions)) as any;
 
   const [suggestedAccounts, defaultVideos] = await prisma.$transaction([
     prisma.user.findMany({
@@ -46,8 +47,10 @@ export const getServerSideProps = async ({
     }),
     prisma.video.findMany({
       take: 10,
+      skip: 0,
       include: {
         user: true,
+        _count: { select: { likes: true, comments: true } },
       },
       orderBy: {
         createdAt: "desc",
@@ -55,11 +58,23 @@ export const getServerSideProps = async ({
     }),
   ]);
 
+  const likes = session?.user?.id
+    ? await prisma.like.findMany({
+        where: {
+          userId: session.user.id,
+          videoId: { in: defaultVideos.map((item) => item.id) },
+        },
+      })
+    : [];
+
   return {
     props: {
       session,
       suggestedAccounts,
-      defaultVideos,
+      defaultVideos: defaultVideos.map((item) => ({
+        ...item,
+        likedByMe: likes.some((like) => like.videoId === item.id),
+      })),
     },
   };
 };

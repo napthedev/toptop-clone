@@ -1,11 +1,12 @@
+import { BiSearch, BiUser } from "react-icons/bi";
+import { FC, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
+
+import { AiOutlinePlus } from "react-icons/ai";
+import ClickAwayListener from "../Shared/ClickAwayListener";
 import Image from "next/future/image";
 import { IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
-import { FC, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
-import { BiSearch, BiUser } from "react-icons/bi";
-import ClickAwayListener from "../Shared/ClickAwayListener";
 
 const Navbar: FC = () => {
   const { data: session, status } = useSession();
@@ -62,7 +63,7 @@ const Navbar: FC = () => {
                       />
                     </button>
                     <div
-                      className={`absolute shadow-[rgb(0_0_0_/_12%)_0px_4px_16px] bg-white top-[120%] right-0 py-2 flex flex-col items-stretch [&>*]:whitespace-nowrap rounded-md transition-all ${
+                      className={`absolute shadow-[rgb(0_0_0_/_12%)_0px_4px_16px] bg-white top-[120%] right-0 py-2 flex flex-col items-stretch [&>*]:whitespace-nowrap rounded-md transition-all z-50 ${
                         isDropdownOpened
                           ? "opacity-100 visible"
                           : "opacity-0 invisible"

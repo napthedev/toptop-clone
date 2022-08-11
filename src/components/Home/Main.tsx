@@ -1,23 +1,24 @@
-import { FC, useEffect, useRef } from "react";
 import { User, Video } from "@prisma/client";
-
-import { AiFillHeart } from "react-icons/ai";
-import { FaCommentDots } from "react-icons/fa";
-import Image from "next/future/image";
+import { FC, useEffect, useRef } from "react";
 import { InView } from "react-intersection-observer";
-import { IoIosShareAlt } from "react-icons/io";
-import VideoPlayer from "./VideoPlayer";
-import { formatAccountName } from "@/utils/text";
+
 import { trpc } from "@/utils/trpc";
+
+import VideoSection from "./VideoSection";
 
 interface MainProps {
   defaultVideos: (Video & {
     user: User;
+    _count: {
+      likes: number;
+      comments: number;
+    };
+    likedByMe: boolean;
   })[];
 }
 
 const Main: FC<MainProps> = ({ defaultVideos }) => {
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } =
     trpc.useInfiniteQuery(["video.for-you", {}], {
       getNextPageParam: (lastPage) => lastPage.nextSkip,
       initialData: {
@@ -80,63 +81,7 @@ const Main: FC<MainProps> = ({ defaultVideos }) => {
     <div className="flex-grow">
       {data?.pages.map((page) =>
         page.items.map((video) => (
-          <div key={video.id} className="flex p-4 gap-3">
-            <div className="flex-shrink-0">
-              <Image
-                width={60}
-                height={60}
-                src={video.user.image!}
-                className="rounded-full"
-                alt=""
-              />
-            </div>
-            <div className="flex flex-col items-stretch gap-3 flex-grow">
-              <div>
-                <p className="flex items-end gap-2">
-                  <span className="font-bold">
-                    {formatAccountName(video.user.name!)}
-                  </span>
-                  <span className="text-sm">{video.user.name}</span>
-                </p>
-                <p
-                  style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
-                >
-                  {video.caption}
-                </p>
-              </div>
-              <div className="flex items-end gap-5">
-                <div
-                  className={`${
-                    video.videoHeight > video.videoWidth * 1.3
-                      ? "h-[600px]"
-                      : "flex-grow h-auto"
-                  } rounded-md overflow-hidden`}
-                >
-                  <VideoPlayer
-                    src={video.videoURL}
-                    poster={video.coverURL}
-                    preload="none"
-                    loop
-                    controls={false}
-                  ></VideoPlayer>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                    <AiFillHeart className="w-7 h-7" />
-                  </button>
-                  <p className="text-center text-xs font-semibold">845.1K</p>
-                  <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                    <FaCommentDots className="w-6 h-6 scale-x-[-1]" />
-                  </button>
-                  <p className="text-center text-xs font-semibold">8452</p>
-                  <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                    <IoIosShareAlt className="w-8 h-8" />
-                  </button>
-                  <p className="text-center text-xs font-semibold">6128</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <VideoSection video={video} key={video.id} refetch={refetch} />
         ))
       )}
 

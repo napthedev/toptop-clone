@@ -1,11 +1,13 @@
-import Navbar from "@/components/Layout/Navbar";
 import type { GetServerSideProps, NextPage } from "next";
-import { authOptions } from "./api/auth/[...nextauth]";
 import { unstable_getServerSession as getServerSession } from "next-auth";
-import { BsFillCloudUploadFill } from "react-icons/bs";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { BsFillCloudUploadFill } from "react-icons/bs";
+
+import Navbar from "@/components/Layout/Navbar";
+
 import { trpc } from "../utils/trpc";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const Upload: NextPage = () => {
   const uploadMutation = trpc.useMutation("video.create");
