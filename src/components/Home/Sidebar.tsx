@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import Image from "next/future/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,10 +9,20 @@ import { RiUserShared2Fill, RiUserShared2Line } from "react-icons/ri";
 
 import { formatAccountName } from "@/utils/text";
 
+interface User {
+  id: string | null;
+  image: string | null;
+  name: string | null;
+}
+
 interface SidebarProps {
   suggestedAccounts: User[];
+  followingAccounts: User[];
 }
-const Sidebar: FC<SidebarProps> = ({ suggestedAccounts }) => {
+const Sidebar: FC<SidebarProps> = ({
+  suggestedAccounts = [],
+  followingAccounts = [],
+}) => {
   const router = useRouter();
   const session = useSession();
 
@@ -50,30 +59,58 @@ const Sidebar: FC<SidebarProps> = ({ suggestedAccounts }) => {
         </Link>
       </div>
 
-      <div className="flex flex-col items-stretch gap-3 py-4 border-b">
-        <p className="text-sm">Suggested Accounts</p>
-        {suggestedAccounts.map((account) => (
-          <Link href={`/account/${account.id}`} key={account.id}>
-            <a className="flex items-center gap-3">
-              <Image
-                className="h-9 w-9 rounded-full object-cover"
-                src={account.image!}
-                alt=""
-              />
+      {suggestedAccounts.length > 0 && (
+        <div className="flex flex-col items-stretch gap-3 py-4 border-b">
+          <p className="text-sm">Suggested Accounts</p>
+          {suggestedAccounts.map((account) => (
+            <Link href={`/account/${account.id}`} key={account.id}>
+              <a className="flex items-center gap-3">
+                <Image
+                  className="h-9 w-9 rounded-full object-cover"
+                  src={account.image!}
+                  alt=""
+                />
 
-              <div>
-                <p className="relative leading-[1]">
-                  <span className="font-semibold text-sm">
-                    {formatAccountName(account.name!)}
-                  </span>
-                  <BsFillCheckCircleFill className="absolute w-[14px] h-[14px] right-[-20px] top-1 fill-[#20D5EC]" />
-                </p>
-                <p className="font-light text-xs">{account.name}</p>
-              </div>
-            </a>
-          </Link>
-        ))}
-      </div>
+                <div>
+                  <p className="relative leading-[1]">
+                    <span className="font-semibold text-sm">
+                      {formatAccountName(account.name!)}
+                    </span>
+                    <BsFillCheckCircleFill className="absolute w-[14px] h-[14px] right-[-20px] top-1 fill-[#20D5EC]" />
+                  </p>
+                  <p className="font-light text-xs">{account.name}</p>
+                </div>
+              </a>
+            </Link>
+          ))}
+        </div>
+      )}
+      {followingAccounts.length > 0 && (
+        <div className="flex flex-col items-stretch gap-3 py-4 border-b">
+          <p className="text-sm">Following Accounts</p>
+          {followingAccounts.map((account) => (
+            <Link href={`/account/${account.id}`} key={account.id}>
+              <a className="flex items-center gap-3">
+                <Image
+                  className="h-9 w-9 rounded-full object-cover"
+                  src={account.image!}
+                  alt=""
+                />
+
+                <div>
+                  <p className="relative leading-[1]">
+                    <span className="font-semibold text-sm">
+                      {formatAccountName(account.name!)}
+                    </span>
+                    <BsFillCheckCircleFill className="absolute w-[14px] h-[14px] right-[-20px] top-1 fill-[#20D5EC]" />
+                  </p>
+                  <p className="font-light text-xs">{account.name}</p>
+                </div>
+              </a>
+            </Link>
+          ))}
+        </div>
+      )}
 
       <div className="[&_p]:cursor-pointer [&_p:hover]:underline text-xs leading-[1.2] mt-5 text-zinc-400 flex flex-col items-stretch gap-4">
         <div className="flex flex-wrap gap-2">
