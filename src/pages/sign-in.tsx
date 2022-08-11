@@ -1,14 +1,15 @@
-import Navbar from "@/components/Layout/Navbar";
-import { unstable_getServerSession as getServerSession } from "next-auth";
-
 import type { GetServerSideProps, NextPage } from "next";
-import { FcGoogle } from "react-icons/fc";
-import { BsFacebook } from "react-icons/bs";
-import { signIn } from "next-auth/react";
-import toast from "react-hot-toast";
-import { authOptions } from "./api/auth/[...nextauth]";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { unstable_getServerSession as getServerSession } from "next-auth";
+import { signIn } from "next-auth/react";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+import { BsFacebook } from "react-icons/bs";
+import { FcGoogle } from "react-icons/fc";
+
+import Navbar from "@/components/Layout/Navbar";
+
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const SignIn: NextPage = () => {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import { User, Video } from "@prisma/client";
+import { useRouter } from "next/router";
 import { FC, useEffect, useRef } from "react";
 import { InView } from "react-intersection-observer";
 
@@ -6,26 +6,21 @@ import { trpc } from "@/utils/trpc";
 
 import VideoSection from "./VideoSection";
 
-interface MainProps {
-  defaultVideos: (Video & {
-    user: User;
-    _count: {
-      likes: number;
-      comments: number;
-    };
-    likedByMe: boolean;
-  })[];
-}
+const Main: FC = () => {
+  const router = useRouter();
 
-const Main: FC<MainProps> = ({ defaultVideos }) => {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } =
-    trpc.useInfiniteQuery(["video.for-you", {}], {
-      getNextPageParam: (lastPage) => lastPage.nextSkip,
-      initialData: {
-        pages: [{ items: defaultVideos, nextSkip: 10 }],
-        pageParams: [null],
-      },
-    });
+    trpc.useInfiniteQuery(
+      [
+        Boolean(Number(router.query.following))
+          ? "video.following"
+          : "video.for-you",
+        {},
+      ],
+      {
+        getNextPageParam: (lastPage) => lastPage.nextSkip,
+      }
+    );
 
   const observer = useRef<IntersectionObserver | null>(null);
 
@@ -70,7 +65,9 @@ const Main: FC<MainProps> = ({ defaultVideos }) => {
     );
 
     videoElements.forEach((item) => observer.current?.observe(item));
-  }, [data?.pages.length]);
+
+    // eslint-disable-next-line
+  }, [data?.pages.length, Boolean(Number(router.query.following))]);
 
   if (data?.pages.length === 0 || data?.pages[0]?.items.length === 0)
     return (

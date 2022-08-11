@@ -1,13 +1,13 @@
-import { AiFillHome, AiOutlineHome } from "react-icons/ai";
-import { RiUserShared2Fill, RiUserShared2Line } from "react-icons/ri";
-
-import { BsFillCheckCircleFill } from "react-icons/bs";
-import { FC } from "react";
+import { User } from "@prisma/client";
 import Image from "next/future/image";
 import Link from "next/link";
-import { User } from "@prisma/client";
-import { formatAccountName } from "@/utils/text";
 import { useRouter } from "next/router";
+import { FC } from "react";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
+import { BsFillCheckCircleFill } from "react-icons/bs";
+import { RiUserShared2Fill, RiUserShared2Line } from "react-icons/ri";
+
+import { formatAccountName } from "@/utils/text";
 
 interface SidebarProps {
   suggestedAccounts: User[];

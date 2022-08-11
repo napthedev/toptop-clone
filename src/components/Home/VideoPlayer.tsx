@@ -1,11 +1,11 @@
+import { FC, HTMLProps, useContext, useEffect, useRef, useState } from "react";
 import {
   BsFillPlayFill,
   BsFillVolumeMuteFill,
   BsFillVolumeUpFill,
 } from "react-icons/bs";
-import { FC, HTMLProps, useContext, useEffect, useRef, useState } from "react";
-
 import { IoMdPause } from "react-icons/io";
+
 import { VolumeContext } from "@/context/VolumeContext";
 
 const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {

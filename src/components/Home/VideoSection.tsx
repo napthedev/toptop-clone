@@ -21,6 +21,7 @@ interface VideoSectionProps {
       comments: number;
     };
     likedByMe: boolean;
+    followedByMe: boolean;
   };
   refetch: Function;
 }
@@ -28,8 +29,13 @@ interface VideoSectionProps {
 const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
   const session = useSession();
 
-  const [isCurrentlyLiked, setIsCurrentlyLiked] = useState(video.likedByMe);
   const likeMutation = trpc.useMutation("like.toggle");
+  const followMutation = trpc.useMutation("follow.toggle");
+
+  const [isCurrentlyLiked, setIsCurrentlyLiked] = useState(video.likedByMe);
+  const [isCurrentlyFollowed, setIsCurrentlyFollowed] = useState<
+    undefined | boolean
+  >(undefined);
 
   const toggleLike = () => {
     if (!session.data?.user) {
@@ -51,6 +57,29 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
     }
   };
 
+  const toggleFollow = () => {
+    followMutation
+      .mutateAsync({
+        followingId: video.userId,
+        isFollowed:
+          typeof isCurrentlyFollowed === "undefined"
+            ? !video.followedByMe
+            : !isCurrentlyFollowed,
+      })
+      .then(() => {
+        refetch();
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsCurrentlyFollowed(isCurrentlyFollowed);
+      });
+    setIsCurrentlyFollowed(
+      typeof isCurrentlyFollowed === "undefined"
+        ? !video.followedByMe
+        : !isCurrentlyFollowed
+    );
+  };
+
   return (
     <div key={video.id} className="flex p-4 gap-3">
       <div className="flex-shrink-0">
@@ -63,16 +92,35 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
         />
       </div>
       <div className="flex flex-col items-stretch gap-3 flex-grow">
-        <div>
-          <p className="flex items-end gap-2">
-            <span className="font-bold">
-              {formatAccountName(video.user.name!)}
-            </span>
-            <span className="text-sm">{video.user.name}</span>
-          </p>
-          <p style={{ wordWrap: "break-word", overflowWrap: "break-word" }}>
-            {video.caption}
-          </p>
+        <div className="flex">
+          <div className="flex-grow">
+            <p className="flex items-end gap-2">
+              <span className="font-bold">
+                {formatAccountName(video.user.name!)}
+              </span>
+              <span className="text-sm">{video.user.name}</span>
+            </p>
+            <p style={{ wordWrap: "break-word", overflowWrap: "break-word" }}>
+              {video.caption}
+            </p>
+          </div>
+          {/* @ts-ignore */}
+          {video.userId !== session.data?.user.id && (
+            <div className="flex-shrink-0">
+              <button
+                onClick={() => toggleFollow()}
+                className={`py-1 px-3 rounded text-sm mt-2 ${
+                  isCurrentlyFollowed ?? video.followedByMe
+                    ? "border hover:bg-[#F8F8F8] transition"
+                    : "border border-pink text-pink hover:bg-[#FFF4F5] transition"
+                }`}
+              >
+                {isCurrentlyFollowed ?? video.followedByMe
+                  ? "Following"
+                  : "Follow"}
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex items-end gap-5">
           <div

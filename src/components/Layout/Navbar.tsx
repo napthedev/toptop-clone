@@ -1,12 +1,12 @@
-import { BiSearch, BiUser } from "react-icons/bi";
-import { FC, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
-
-import { AiOutlinePlus } from "react-icons/ai";
-import ClickAwayListener from "../Shared/ClickAwayListener";
 import Image from "next/future/image";
-import { IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
+import { signOut, useSession } from "next-auth/react";
+import { FC, useState } from "react";
+import { AiOutlinePlus } from "react-icons/ai";
+import { BiSearch, BiUser } from "react-icons/bi";
+import { IoLogOutOutline } from "react-icons/io5";
+
+import ClickAwayListener from "../Shared/ClickAwayListener";
 
 const Navbar: FC = () => {
   const { data: session, status } = useSession();
