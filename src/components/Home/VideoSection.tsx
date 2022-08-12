@@ -1,5 +1,6 @@
 import { User, Video } from "@prisma/client";
 import Image from "next/future/image";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
@@ -28,6 +29,7 @@ interface VideoSectionProps {
 
 const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
   const session = useSession();
+  const router = useRouter();
 
   const likeMutation = trpc.useMutation("like.toggle");
   const followMutation = trpc.useMutation("follow.toggle");
@@ -124,6 +126,7 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
         </div>
         <div className="flex items-end gap-5">
           <div
+            onClick={() => router.push(`/video/${video.id}`)}
             className={`${
               video.videoHeight > video.videoWidth * 1.3
                 ? "h-[600px]"

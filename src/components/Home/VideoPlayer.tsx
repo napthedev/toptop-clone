@@ -28,7 +28,7 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
   }, [isPaused]);
 
   return (
-    <div className="h-full w-auto relative">
+    <div className="h-full w-auto relative cursor-pointer">
       <video
         {...props}
         ref={videoRef}
@@ -38,7 +38,10 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
         muted={isMuted}
       ></video>
       <button
-        onClick={() => setIsPaused(!isPaused)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsPaused(!isPaused);
+        }}
         className="absolute bottom-4 left-3"
       >
         {isPaused ? (
@@ -48,7 +51,10 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
         )}
       </button>
       <button
-        onClick={() => setIsMuted(!isMuted)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsMuted(!isMuted);
+        }}
         className="absolute bottom-4 right-3"
       >
         {isMuted ? (
