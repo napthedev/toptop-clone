@@ -165,7 +165,6 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
             <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
               <IoIosShareAlt className="w-8 h-8" />
             </button>
-            <p className="text-center text-xs font-semibold">6128</p>
           </div>
         </div>
       </div>

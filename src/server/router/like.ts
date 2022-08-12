@@ -4,6 +4,21 @@ import { z } from "zod";
 import { createRouter } from "./context";
 
 export const likeRouter = createRouter()
+  .query("count", {
+    input: z.object({
+      videoId: z.string(),
+    }),
+    resolve: async ({ ctx: { prisma }, input }) => {
+      const count = await prisma.like.count({
+        where: {
+          videoId: input.videoId,
+        },
+      });
+      return {
+        count,
+      };
+    },
+  })
   .middleware(async ({ ctx, next }) => {
     if (!ctx.session) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
