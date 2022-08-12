@@ -40,9 +40,10 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault();
           setIsPaused(!isPaused);
         }}
-        className="absolute bottom-4 left-3"
+        className="absolute bottom-4 left-3 z-10"
       >
         {isPaused ? (
           <BsFillPlayFill className="fill-white h-7 w-7" />
@@ -53,9 +54,10 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
       <button
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault();
           setIsMuted(!isMuted);
         }}
-        className="absolute bottom-4 right-3"
+        className="absolute bottom-4 right-3 z-10"
       >
         {isMuted ? (
           <BsFillVolumeMuteFill className="fill-white h-7 w-7" />

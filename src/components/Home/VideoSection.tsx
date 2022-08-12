@@ -1,6 +1,6 @@
 import { User, Video } from "@prisma/client";
 import Image from "next/future/image";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
@@ -29,7 +29,6 @@ interface VideoSectionProps {
 
 const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
   const session = useSession();
-  const router = useRouter();
 
   const likeMutation = trpc.useMutation("like.toggle");
   const followMutation = trpc.useMutation("follow.toggle");
@@ -125,22 +124,23 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch }) => {
           )}
         </div>
         <div className="flex items-end gap-5">
-          <div
-            onClick={() => router.push(`/video/${video.id}`)}
-            className={`${
-              video.videoHeight > video.videoWidth * 1.3
-                ? "h-[600px]"
-                : "flex-grow h-auto"
-            } rounded-md overflow-hidden`}
-          >
-            <VideoPlayer
-              src={video.videoURL}
-              poster={video.coverURL}
-              preload="none"
-              loop
-              controls={false}
-            ></VideoPlayer>
-          </div>
+          <Link href={`/video/${video.id}`}>
+            <a
+              className={`${
+                video.videoHeight > video.videoWidth * 1.3
+                  ? "h-[600px]"
+                  : "flex-grow h-auto"
+              } block rounded-md overflow-hidden`}
+            >
+              <VideoPlayer
+                src={video.videoURL}
+                poster={video.coverURL}
+                preload="none"
+                loop
+                controls={false}
+              ></VideoPlayer>
+            </a>
+          </Link>
           <div className="flex flex-col gap-2">
             <button
               onClick={() => toggleLike()}
