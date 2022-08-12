@@ -1,6 +1,6 @@
 import superjson from "superjson";
-import { commentRouter } from "./comment";
 
+import { commentRouter } from "./comment";
 import { createRouter } from "./context";
 import { followRouter } from "./follow";
 import { likeRouter } from "./like";

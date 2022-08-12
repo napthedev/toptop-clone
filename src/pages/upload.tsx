@@ -155,6 +155,7 @@ const Upload: NextPage = () => {
                 autoPlay
                 controls
                 src={videoURL}
+                playsInline
               />
             ) : (
               <button

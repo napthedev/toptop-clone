@@ -107,9 +107,11 @@ const Video: NextPage<VideoProps> = ({ video, href }) => {
           className="w-auto h-auto max-w-full max-h-full"
           src={video.videoURL}
           muted
-          // autoPlay
+          autoPlay
           loop
           poster={video.coverURL}
+          controls
+          playsInline
         ></video>
         <div className="absolute top-5 left-5 flex gap-3">
           {isBackButtonVisible && (

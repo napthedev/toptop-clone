@@ -36,6 +36,7 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
         onPauseCapture={() => setIsPaused(true)}
         onPlayCapture={() => setIsPaused(false)}
         muted={isMuted}
+        playsInline
       ></video>
       <button
         onClick={(e) => {
