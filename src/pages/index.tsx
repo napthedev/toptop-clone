@@ -83,21 +83,23 @@ export const getServerSideProps = async ({
         name: true,
       },
     }),
-    prisma.follow.findMany({
-      where: {
-        // @ts-ignore
-        followerId: session?.user?.id,
-      },
-      select: {
-        following: {
-          select: {
-            id: true,
-            image: true,
-            name: true,
+    session?.user
+      ? prisma.follow.findMany({
+          where: {
+            // @ts-ignore
+            followerId: session?.user?.id,
           },
-        },
-      },
-    }),
+          select: {
+            following: {
+              select: {
+                id: true,
+                image: true,
+                name: true,
+              },
+            },
+          },
+        })
+      : Promise.resolve([]),
     isFetchingFollowing
       ? ssg.prefetchInfiniteQuery("video.following", {})
       : ssg.prefetchInfiniteQuery("video.for-you", {}),
