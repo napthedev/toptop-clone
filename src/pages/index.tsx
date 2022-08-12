@@ -18,6 +18,7 @@ import { authOptions } from "./api/auth/[...nextauth]";
 const Home: NextPage<HomeProps> = ({
   suggestedAccounts,
   followingAccounts,
+  origin,
 }) => {
   return (
     <>
@@ -28,7 +29,7 @@ const Home: NextPage<HomeProps> = ({
             suggestedAccounts={suggestedAccounts!}
             followingAccounts={followingAccounts!}
           />
-          <Main />
+          <Main origin={origin!} />
         </div>
       </div>
     </>
@@ -111,6 +112,9 @@ export const getServerSideProps = async ({
       session,
       suggestedAccounts,
       followingAccounts: followingAccounts.map((item) => item.following),
+      origin: `${
+        req.headers.host?.includes("localhost") ? "http" : "https"
+      }://${req.headers.host}`,
     },
   };
 };

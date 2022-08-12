@@ -4,6 +4,7 @@ import { withTRPC } from "@trpc/next";
 import type { AppType } from "next/dist/shared/lib/utils";
 import Head from "next/head";
 import { SessionProvider } from "next-auth/react";
+import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 import superjson from "superjson";
 
@@ -21,6 +22,7 @@ const MyApp: AppType = ({
         <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
       </Head>
       <Toaster />
+      <NextNProgress color="#FE2C55" options={{ showSpinner: false }} />
       <SessionProvider session={session}>
         <VolumeContextProvider>
           <Component {...pageProps} />
@@ -49,5 +51,5 @@ export default withTRPC<AppRouter>({
       transformer: superjson,
     };
   },
-  ssr: true,
+  ssr: false,
 })(MyApp);

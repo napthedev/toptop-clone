@@ -22,7 +22,7 @@ import { trpc } from "@/utils/trpc";
 
 import { authOptions } from "../api/auth/[...nextauth]";
 
-const Video: NextPage<VideoProps> = ({ video, href }) => {
+const Video: NextPage<VideoProps> = ({ video, href, title }) => {
   const session = useSession();
   const router = useRouter();
 
@@ -190,25 +190,40 @@ const Video: NextPage<VideoProps> = ({ video, href }) => {
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <button
-                  disabled={likeMutation.isLoading}
-                  className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full"
-                >
+                <button className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
                   <FaCommentDots className="w-5 h-5 scale-x-[-1]" />
                 </button>
                 <p className="text-center text-xs font-semibold">
-                  {formatNumber(0)}
+                  {formatNumber(commentsQuery.data?.length || 0)}
                 </p>
               </div>
             </div>
             <div className="flex gap-1 items-center">
-              <a href="">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  href
+                )}&t=${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <BsFacebook className="fill-[#0476E9] w-7 h-7" />
               </a>
-              <a href="">
+              <a
+                href={`http://twitter.com/share?text=${encodeURIComponent(
+                  title
+                )}&url=${encodeURIComponent(href)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <AiFillTwitterCircle className="fill-[#05AAF4] w-8 h-8" />
               </a>
-              <a>
+              <a
+                href={`http://www.reddit.com/submit?url=${encodeURIComponent(
+                  href
+                )}&title=${encodeURIComponent(title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <BsReddit className="fill-[#FF4500] w-7 h-7" />
               </a>
             </div>
@@ -376,12 +391,10 @@ export const getServerSideProps = async ({
           followedByMe,
         },
         session,
-        origin: `${
-          req.headers.host?.includes("localhost") ? "http" : "https"
-        }://${req.headers.host}`,
         href: `${
           req.headers.host?.includes("localhost") ? "http" : "https"
         }://${req.headers.host}/video/${id}`,
+        title: `${video.user.name} on TopTop`,
       },
     };
   } catch (error) {

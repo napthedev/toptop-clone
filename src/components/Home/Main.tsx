@@ -6,7 +6,11 @@ import { trpc } from "@/utils/trpc";
 
 import VideoSection from "./VideoSection";
 
-const Main: FC = () => {
+interface MainProps {
+  origin: string;
+}
+
+const Main: FC<MainProps> = ({ origin }) => {
   const router = useRouter();
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } =
@@ -78,7 +82,12 @@ const Main: FC = () => {
     <div className="flex-grow">
       {data?.pages.map((page) =>
         page.items.map((video) => (
-          <VideoSection video={video} key={video.id} refetch={refetch} />
+          <VideoSection
+            video={video}
+            key={video.id}
+            refetch={refetch}
+            origin={origin}
+          />
         ))
       )}
 
