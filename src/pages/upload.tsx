@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import { unstable_getServerSession as getServerSession } from "next-auth";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -10,6 +11,8 @@ import { trpc } from "../utils/trpc";
 import { authOptions } from "./api/auth/[...nextauth]";
 
 const Upload: NextPage = () => {
+  const router = useRouter();
+
   const uploadMutation = trpc.useMutation("video.create");
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -117,8 +120,6 @@ const Upload: NextPage = () => {
         ).json()
       ).attachments[0].proxy_url;
 
-      console.log(uploadedVideo, uploadedCover);
-
       const created = await uploadMutation.mutateAsync({
         caption: inputValue.trim(),
         coverURL: uploadedCover,
@@ -129,7 +130,7 @@ const Upload: NextPage = () => {
 
       setIsLoading(false);
 
-      console.log(created.id);
+      router.push(`/video/${created.id}`);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
