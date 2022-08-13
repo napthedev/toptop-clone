@@ -32,11 +32,13 @@ const Video: FC<HTMLProps<HTMLVideoElement>> = (props) => {
       <video
         {...props}
         ref={videoRef}
-        className="h-full w-auto"
+        className="max-h-full w-auto"
         onPauseCapture={() => setIsPaused(true)}
         onPlayCapture={() => setIsPaused(false)}
         muted={isMuted}
         playsInline
+        loop
+        controls={false}
       ></video>
       <button
         onClick={(e) => {

@@ -144,14 +144,11 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
                 video.videoHeight > video.videoWidth * 1.3
                   ? "md:h-[600px]"
                   : "flex-grow h-auto"
-              } block rounded-md overflow-hidden flex-grow h-auto md:flex-grow-0`}
+              } block bg-[#3D3C3D] rounded-md overflow-hidden flex-grow h-auto md:flex-grow-0`}
             >
               <VideoPlayer
                 src={video.videoURL}
                 poster={video.coverURL}
-                preload="none"
-                loop
-                controls={false}
               ></VideoPlayer>
             </a>
           </Link>
