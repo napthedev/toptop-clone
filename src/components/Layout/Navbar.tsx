@@ -31,7 +31,7 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className="border-b">
+    <nav className="border-b sticky top-0 z-20 bg-white">
       <div className="flex justify-center mx-4">
         <div className="w-full max-w-[1150px] flex justify-between items-center h-[60px]">
           <Link href="/">

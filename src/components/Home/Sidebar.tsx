@@ -27,7 +27,7 @@ const Sidebar: FC<SidebarProps> = ({
   const session = useSession();
 
   return (
-    <div className="w-[48px] border-r lg:border-none lg:w-[348px] h-[calc(100vh-60px)] overflow-y-auto flex-shrink-0 py-5">
+    <div className="w-[48px] border-r lg:border-none lg:w-[348px] h-[calc(100vh-60px)] sticky top-[60px] overflow-y-auto flex-shrink-0 py-5">
       <div className="flex flex-col items-stretch gap-5 [&_svg]:h-7 [&_svg]:w-7 font-semibold pb-6 border-b">
         <Link href="/">
           <a
