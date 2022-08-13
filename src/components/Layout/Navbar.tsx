@@ -1,7 +1,8 @@
 import Image from "next/future/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiSearch, BiUser } from "react-icons/bi";
 import { IoLogOutOutline } from "react-icons/io5";
@@ -9,9 +10,25 @@ import { IoLogOutOutline } from "react-icons/io5";
 import ClickAwayListener from "../Shared/ClickAwayListener";
 
 const Navbar: FC = () => {
+  const router = useRouter();
+
   const { data: session, status } = useSession();
 
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
+
+  const [inputValue, setInputValue] = useState(
+    router.pathname === "/search" && typeof router.query.q === "string"
+      ? (router.query.q as string)
+      : ""
+  );
+
+  const handleFormSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (inputValue.trim()) {
+      router.push({ pathname: "/search", query: { q: inputValue.trim() } });
+    }
+  };
 
   return (
     <nav className="border-b">
@@ -23,17 +40,25 @@ const Navbar: FC = () => {
               <span className="text-2xl leading-[1] font-bold">TopTop</span>
             </a>
           </Link>
-          <div className="relative w-[360px] h-[46px]">
+          <form
+            onSubmit={handleFormSubmit}
+            className="relative w-[360px] h-[46px]"
+          >
             <input
               className="w-full h-full outline-none bg-gray-1 rounded-full pl-4 pr-14 border border-transparent focus:border-gray-400 transition"
               type="text"
               placeholder="Search accounts and videos..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
             />
             <div className="absolute h-8 w-[1px] right-12 top-1/2 -translate-y-1/2 bg-gray-300"></div>
-            <button className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            >
               <BiSearch className="fill-gray-400 w-6 h-6" />
             </button>
-          </div>
+          </form>
           <div className="flex items-center gap-3">
             <Link href={status === "authenticated" ? "/upload" : "/sign-in"}>
               <a className="border rounded flex items-center gap-2 h-9 px-3 border-gray-200 bg-white hover:bg-gray-100 transition">

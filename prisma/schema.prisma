@@ -3,7 +3,7 @@
 
 generator client {
     provider        = "prisma-client-js"
-    previewFeatures = ["referentialIntegrity"]
+    previewFeatures = ["referentialIntegrity", "fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -50,8 +50,10 @@ model User {
     videos        Video[]
     likes         Like[]
     comments      Comment[]
-    followers     Follow[]  @relation("followers")
-    followings    Follow[]  @relation("followings")
+    followers     Follow[]  @relation("followings")
+    followings    Follow[]  @relation("followers")
+
+    @@fulltext([name, email])
 }
 
 model VerificationToken {
@@ -76,6 +78,8 @@ model Video {
     user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     likes       Like[]
     comments    Comment[]
+
+    @@fulltext([caption])
 }
 
 model Like {
