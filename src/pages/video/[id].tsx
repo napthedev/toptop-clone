@@ -8,12 +8,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { unstable_getServerSession as getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { AiFillHeart, AiFillTwitterCircle } from "react-icons/ai";
 import { BsFacebook, BsReddit } from "react-icons/bs";
 import { FaCommentDots, FaTimes } from "react-icons/fa";
 
+import { VolumeContext } from "@/context/VolumeContext";
 import { prisma } from "@/server/db/client";
 import { copyToClipboard } from "@/utils/clipboard";
 import { formatNumber } from "@/utils/number";
@@ -45,6 +46,7 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
     video?.followedByMe
   );
   const [inputValue, setInputValue] = useState("");
+  const { isMuted, setIsMuted } = useContext(VolumeContext);
 
   useEffect(() => {
     if (history.length > 2) setIsBackButtonVisible(true);
@@ -106,7 +108,8 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
         <video
           className="w-auto h-auto max-w-full max-h-full"
           src={video.videoURL}
-          muted
+          muted={isMuted}
+          onVolumeChange={(e: any) => setIsMuted(e.target.muted)}
           autoPlay
           loop
           poster={video.coverURL}

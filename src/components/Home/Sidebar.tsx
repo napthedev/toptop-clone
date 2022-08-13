@@ -66,7 +66,9 @@ const Sidebar: FC<SidebarProps> = ({
             <Link href={`/account/${account.id}`} key={account.id}>
               <a className="flex items-center gap-3">
                 <Image
-                  className="h-9 w-9 rounded-full object-cover"
+                  className="rounded-full object-cover"
+                  height={36}
+                  width={36}
                   src={account.image!}
                   alt=""
                 />
@@ -92,8 +94,10 @@ const Sidebar: FC<SidebarProps> = ({
             <Link href={`/account/${account.id}`} key={account.id}>
               <a className="flex items-center gap-3">
                 <Image
-                  className="h-9 w-9 rounded-full object-cover"
+                  className="rounded-full object-cover"
                   src={account.image!}
+                  height={36}
+                  width={36}
                   alt=""
                 />
 
