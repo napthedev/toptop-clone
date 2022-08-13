@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { BsFillCloudUploadFill } from "react-icons/bs";
 
 import Navbar from "@/components/Layout/Navbar";
+import { fetchWithProgress } from "@/utils/fetch";
 
 import { trpc } from "../utils/trpc";
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -89,21 +90,24 @@ const Upload: NextPage = () => {
 
     setIsLoading(true);
 
+    const toastID = toast.loading("Uploading...");
+
     try {
       const uploadedVideo = (
-        await (
-          await fetch(
-            new URL(
-              "/upload?fileName=video.mp4",
-              process.env.NEXT_PUBLIC_UPLOAD_URL!
-            ).href,
-            {
-              method: "POST",
-              body: videoFile,
-            }
-          )
-        ).json()
+        await fetchWithProgress(
+          "POST",
+          new URL(
+            "/upload?fileName=video.mp4",
+            process.env.NEXT_PUBLIC_UPLOAD_URL!
+          ).href,
+          videoFile,
+          (percentage) => {
+            toast.loading(`Uploading ${percentage}%...`, { id: toastID });
+          }
+        )
       ).url;
+
+      toast.loading("Uploading cover image...", { id: toastID });
 
       const coverBlob = await (await fetch(coverImageURL)).blob();
 
@@ -120,6 +124,8 @@ const Upload: NextPage = () => {
         ).json()
       ).attachments[0].proxy_url;
 
+      toast.loading("Uploading metadata...", { id: toastID });
+
       const created = await uploadMutation.mutateAsync({
         caption: inputValue.trim(),
         coverURL: uploadedCover,
@@ -127,6 +133,8 @@ const Upload: NextPage = () => {
         videoHeight,
         videoWidth,
       });
+
+      toast.dismiss(toastID);
 
       setIsLoading(false);
 
@@ -136,6 +144,7 @@ const Upload: NextPage = () => {
       setIsLoading(false);
       toast.error("Failed to upload video", {
         position: "bottom-right",
+        id: toastID,
       });
     }
   };
