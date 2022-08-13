@@ -168,6 +168,7 @@ export const getServerSideProps = async ({
 
     return {
       props: {
+        session,
         user: {
           ...user,
           followedByMe: Boolean(followInfo),
