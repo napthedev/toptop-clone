@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { unstable_getServerSession as getServerSession } from "next-auth";
-import { useEffect, useRef, useState } from "react";
+import { DragEventHandler, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { BsFillCloudUploadFill } from "react-icons/bs";
 
@@ -26,6 +26,7 @@ const Upload: NextPage = () => {
   const [inputValue, setInputValue] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isFileDragging, setIsFileDragging] = useState(false);
 
   useEffect(() => {
     if (uploadMutation.error) {
@@ -36,7 +37,16 @@ const Upload: NextPage = () => {
   }, [uploadMutation.error]);
 
   const handleFileChange = (file: File) => {
-    if (!file.type.startsWith("video")) return;
+    if (!file.type.startsWith("video")) {
+      toast("Only video file is allowed");
+      return;
+    }
+
+    // Max 200MB file size
+    if (file.size > 209715200) {
+      toast("Max 200MB file size");
+      return;
+    }
 
     const url = URL.createObjectURL(file);
 
@@ -149,6 +159,33 @@ const Upload: NextPage = () => {
     }
   };
 
+  const dragBlur: DragEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(false);
+  };
+
+  const dragFocus: DragEventHandler<HTMLButtonElement> = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFileDragging(true);
+  };
+
+  const dropFile = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let files = e.dataTransfer.files;
+
+    if (files.length > 1) {
+      toast("Only one file is allowed");
+    } else {
+      handleFileChange(files[0]);
+    }
+
+    setIsFileDragging(false);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-stretch">
       <Navbar />
@@ -169,8 +206,14 @@ const Upload: NextPage = () => {
               />
             ) : (
               <button
+                onDrop={dropFile}
+                onDragLeave={dragBlur}
+                onDragEnter={dragFocus}
+                onDragOver={dragFocus}
                 onClick={() => inputRef.current?.click()}
-                className="w-[250px] flex-shrink-0 border-2 border-gray-300 rounded-md border-dashed flex flex-col items-center p-8 cursor-pointer hover:border-red-1 transition"
+                className={`w-[250px] flex-shrink-0 border-2 border-gray-300 rounded-md border-dashed flex flex-col items-center p-8 cursor-pointer hover:border-red-1 transition ${
+                  isFileDragging ? "border-red-1" : ""
+                }`}
               >
                 <BsFillCloudUploadFill className="fill-[#B0B0B4] w-10 h-10" />
                 <h1 className="font-semibold mt-4 mb-2">
@@ -182,7 +225,7 @@ const Upload: NextPage = () => {
                   <p>MP4 or WebM</p>
                   <p>Any resolution</p>
                   <p>Any duration</p>
-                  <p>Less than 300MB</p>
+                  <p>Less than 200MB</p>
                 </div>
 
                 <div className="w-full bg-red-1 text-white p-2">
