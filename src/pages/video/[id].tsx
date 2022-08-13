@@ -14,6 +14,7 @@ import { AiFillHeart, AiFillTwitterCircle } from "react-icons/ai";
 import { BsFacebook, BsReddit } from "react-icons/bs";
 import { FaCommentDots, FaTimes } from "react-icons/fa";
 
+import Meta from "@/components/Shared/Meta";
 import { VolumeContext } from "@/context/VolumeContext";
 import { prisma } from "@/server/db/client";
 import { copyToClipboard } from "@/utils/clipboard";
@@ -107,226 +108,236 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
   if (!video) return <></>;
 
   return (
-    <div className="flex flex-col lg:flex-row lg:h-screen items-stretch">
-      <div className="lg:flex-grow flex justify-center items-center relative bg-[#1E1619]">
-        <video
-          className="w-auto h-auto max-w-full max-h-[600px] lg:max-h-full"
-          src={video.videoURL}
-          muted={isMuted}
-          onVolumeChange={(e: any) => setIsMuted(e.target.muted)}
-          autoPlay
-          loop
-          poster={video.coverURL}
-          controls
-          playsInline
-        ></video>
-        <div className="absolute top-5 left-5 flex gap-3">
-          {isBackButtonVisible && (
-            <button
-              onClick={() => router.back()}
-              className="bg-[#3D3C3D] w-[40px] h-[40px] rounded-full flex justify-center items-center"
-            >
-              <FaTimes className="w-5 h-5 fill-white" />
-            </button>
-          )}
-          <Link href="/">
-            <a className="w-[40px] h-[40px]">
-              <img
-                className="w-full h-full object-cover rounded-full"
-                src="/favicon.png"
-                alt=""
-              />
-            </a>
-          </Link>
-        </div>
-      </div>
-      <div className="w-full lg:w-[500px] flex-shrink-0 flex flex-col items-stretch h-screen">
-        <div className="px-4 pt-6 pb-4 flex-shrink-0 border-b">
-          <div className="flex">
-            <Link href={`/user/${video.user.id}`}>
-              <a className="mr-3 flex-shrink-0 rounded-full">
-                <Image
-                  src={video.user.image!}
+    <>
+      <Meta
+        title={`${video.user.name} on TopTop`}
+        description="Video | TopTop"
+        image={video.coverURL}
+      />
+
+      <div className="flex flex-col lg:flex-row lg:h-screen items-stretch">
+        <div className="lg:flex-grow flex justify-center items-center relative bg-[#1E1619]">
+          <video
+            className="w-auto h-auto max-w-full max-h-[600px] lg:max-h-full"
+            src={video.videoURL}
+            muted={isMuted}
+            onVolumeChange={(e: any) => setIsMuted(e.target.muted)}
+            autoPlay
+            loop
+            poster={video.coverURL}
+            controls
+            playsInline
+          ></video>
+          <div className="absolute top-5 left-5 flex gap-3">
+            {isBackButtonVisible && (
+              <button
+                onClick={() => router.back()}
+                className="bg-[#3D3C3D] w-[40px] h-[40px] rounded-full flex justify-center items-center"
+              >
+                <FaTimes className="w-5 h-5 fill-white" />
+              </button>
+            )}
+            <Link href="/">
+              <a className="w-[40px] h-[40px]">
+                <img
+                  className="w-full h-full object-cover rounded-full"
+                  src="/favicon.png"
                   alt=""
-                  height={40}
-                  width={40}
-                  className="rounded-full"
                 />
               </a>
             </Link>
-            <div className="flex-grow">
-              <Link href={`/user/${video.user.id}`}>
-                <a className="font-bold block hover:underline">
-                  {formatAccountName(video.user.name!)}
-                </a>
-              </Link>
-              <Link href={`/user/${video.user.id}`}>
-                <a className="text-sm block hover:underline">
-                  {video.user.name}
-                </a>
-              </Link>
-            </div>
-            {/* @ts-ignore */}
-            {video.user.id !== session.data?.user?.id && (
-              <div className="flex-shrink-0">
-                <button
-                  onClick={() => toggleFollow()}
-                  className={`py-1 px-3 rounded text-sm mt-2 ${
-                    isCurrentlyFollowed ?? video.followedByMe
-                      ? "border hover:bg-[#F8F8F8] transition"
-                      : "border border-pink text-pink hover:bg-[#FFF4F5] transition"
-                  }`}
-                >
-                  {isCurrentlyFollowed ?? video.followedByMe
-                    ? "Following"
-                    : "Follow"}
-                </button>
-              </div>
-            )}
-          </div>
-          <p
-            className="my-3"
-            style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
-          >
-            {video.caption}
-          </p>
-
-          <div className="flex justify-between items-center">
-            <div className="flex gap-5">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => toggleLike()}
-                  className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full"
-                >
-                  <AiFillHeart
-                    className={`w-5 h-5 ${isCurrentlyLiked ? "fill-pink" : ""}`}
-                  />
-                </button>
-                <span className="text-center text-xs font-semibold">
-                  {formatNumber(likeCountQuery.data?.count!)}
-                </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <button className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                  <FaCommentDots className="w-5 h-5 scale-x-[-1]" />
-                </button>
-                <p className="text-center text-xs font-semibold">
-                  {formatNumber(commentsQuery.data?.length || 0)}
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-1 items-center">
-              <a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                  href
-                )}&t=${encodeURIComponent(title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <BsFacebook className="fill-[#0476E9] w-7 h-7" />
-              </a>
-              <a
-                href={`http://twitter.com/share?text=${encodeURIComponent(
-                  title
-                )}&url=${encodeURIComponent(href)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AiFillTwitterCircle className="fill-[#05AAF4] w-8 h-8" />
-              </a>
-              <a
-                href={`http://www.reddit.com/submit?url=${encodeURIComponent(
-                  href
-                )}&title=${encodeURIComponent(title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <BsReddit className="fill-[#FF4500] w-7 h-7" />
-              </a>
-            </div>
-          </div>
-
-          <div className="flex items-stretch mt-3">
-            <input
-              // @ts-ignore
-              onClick={(e) => e.target?.select?.()}
-              className="bg-[#F1F1F2] p-2 flex-grow text-sm border outline-none"
-              readOnly
-              type="text"
-              value={href}
-            />
-            <button
-              className="flex-shrink-0 border px-2"
-              onClick={() => {
-                copyToClipboard(href)
-                  ?.then(() => toast("Copied to clipboard"))
-                  ?.catch(() => toast.error("Failed to copy to clipboard"));
-              }}
-            >
-              Copy link
-            </button>
           </div>
         </div>
-        <div className="flex-grow flex flex-col items-stretch gap-3 overflow-y-auto bg-[#F8F8F8] p-5">
-          {commentsQuery.data?.map((comment) => (
-            <div key={comment.id} className="flex gap-2">
-              <Link href={`/user/${comment.user.id}`}>
-                <a className="flex-shrink-0 rounded-full">
+        <div className="w-full lg:w-[500px] flex-shrink-0 flex flex-col items-stretch h-screen">
+          <div className="px-4 pt-6 pb-4 flex-shrink-0 border-b">
+            <div className="flex">
+              <Link href={`/user/${video.user.id}`}>
+                <a className="mr-3 flex-shrink-0 rounded-full">
                   <Image
-                    src={comment.user.image!}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
+                    src={video.user.image!}
                     alt=""
+                    height={40}
+                    width={40}
+                    className="rounded-full"
                   />
                 </a>
               </Link>
               <div className="flex-grow">
-                <Link href={`/user/${comment.user.id}`}>
-                  <a className="font-bold hover:underline">
-                    {comment.user.name}
+                <Link href={`/user/${video.user.id}`}>
+                  <a className="font-bold block hover:underline">
+                    {formatAccountName(video.user.name!)}
                   </a>
                 </Link>
-                <p
-                  style={{
-                    wordWrap: "break-word",
-                    overflowWrap: "break-word",
-                  }}
+                <Link href={`/user/${video.user.id}`}>
+                  <a className="text-sm block hover:underline">
+                    {video.user.name}
+                  </a>
+                </Link>
+              </div>
+              {/* @ts-ignore */}
+              {video.user.id !== session.data?.user?.id && (
+                <div className="flex-shrink-0">
+                  <button
+                    onClick={() => toggleFollow()}
+                    className={`py-1 px-3 rounded text-sm mt-2 ${
+                      isCurrentlyFollowed ?? video.followedByMe
+                        ? "border hover:bg-[#F8F8F8] transition"
+                        : "border border-pink text-pink hover:bg-[#FFF4F5] transition"
+                    }`}
+                  >
+                    {isCurrentlyFollowed ?? video.followedByMe
+                      ? "Following"
+                      : "Follow"}
+                  </button>
+                </div>
+              )}
+            </div>
+            <p
+              className="my-3"
+              style={{ wordWrap: "break-word", overflowWrap: "break-word" }}
+            >
+              {video.caption}
+            </p>
+
+            <div className="flex justify-between items-center">
+              <div className="flex gap-5">
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => toggleLike()}
+                    className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full"
+                  >
+                    <AiFillHeart
+                      className={`w-5 h-5 ${
+                        isCurrentlyLiked ? "fill-pink" : ""
+                      }`}
+                    />
+                  </button>
+                  <span className="text-center text-xs font-semibold">
+                    {formatNumber(likeCountQuery.data?.count!)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button className="w-9 h-9 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
+                    <FaCommentDots className="w-5 h-5 scale-x-[-1]" />
+                  </button>
+                  <p className="text-center text-xs font-semibold">
+                    {formatNumber(commentsQuery.data?.length || 0)}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-1 items-center">
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                    href
+                  )}&t=${encodeURIComponent(title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
-                  {comment.content}
-                </p>
-                <p className="text-sm text-gray-400">
-                  {comment.createdAt.toLocaleDateString("vi")}
-                </p>
+                  <BsFacebook className="fill-[#0476E9] w-7 h-7" />
+                </a>
+                <a
+                  href={`http://twitter.com/share?text=${encodeURIComponent(
+                    title
+                  )}&url=${encodeURIComponent(href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AiFillTwitterCircle className="fill-[#05AAF4] w-8 h-8" />
+                </a>
+                <a
+                  href={`http://www.reddit.com/submit?url=${encodeURIComponent(
+                    href
+                  )}&title=${encodeURIComponent(title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <BsReddit className="fill-[#FF4500] w-7 h-7" />
+                </a>
               </div>
             </div>
-          ))}
-        </div>
-        <form
-          onSubmit={handlePostComment}
-          className="flex-shrink-0 flex p-5 gap-3 border-t"
-        >
-          <input
-            className="bg-[#F1F1F2] rounded-md p-2 flex-grow text-sm outline-none placeholder:text-gray-500 border border-transparent focus:border-gray-300 transition"
-            type="text"
-            placeholder="Add comment..."
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-          />
-          <button
-            disabled={postCommentMutation.isLoading || !inputValue.trim()}
-            type="submit"
-            className={`transition ${
-              postCommentMutation.isLoading || !inputValue.trim()
-                ? ""
-                : "text-pink"
-            }`}
+
+            <div className="flex items-stretch mt-3">
+              <input
+                // @ts-ignore
+                onClick={(e) => e.target?.select?.()}
+                className="bg-[#F1F1F2] p-2 flex-grow text-sm border outline-none"
+                readOnly
+                type="text"
+                value={href}
+              />
+              <button
+                className="flex-shrink-0 border px-2"
+                onClick={() => {
+                  copyToClipboard(href)
+                    ?.then(() => toast("Copied to clipboard"))
+                    ?.catch(() => toast.error("Failed to copy to clipboard"));
+                }}
+              >
+                Copy link
+              </button>
+            </div>
+          </div>
+          <div className="flex-grow flex flex-col items-stretch gap-3 overflow-y-auto bg-[#F8F8F8] p-5">
+            {commentsQuery.data?.map((comment) => (
+              <div key={comment.id} className="flex gap-2">
+                <Link href={`/user/${comment.user.id}`}>
+                  <a className="flex-shrink-0 rounded-full">
+                    <Image
+                      src={comment.user.image!}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                      alt=""
+                    />
+                  </a>
+                </Link>
+                <div className="flex-grow">
+                  <Link href={`/user/${comment.user.id}`}>
+                    <a className="font-bold hover:underline">
+                      {comment.user.name}
+                    </a>
+                  </Link>
+                  <p
+                    style={{
+                      wordWrap: "break-word",
+                      overflowWrap: "break-word",
+                    }}
+                  >
+                    {comment.content}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {comment.createdAt.toLocaleDateString("vi")}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <form
+            onSubmit={handlePostComment}
+            className="flex-shrink-0 flex p-5 gap-3 border-t"
           >
-            {postCommentMutation.isLoading ? "Posting..." : "Post"}
-          </button>
-        </form>
+            <input
+              className="bg-[#F1F1F2] rounded-md p-2 flex-grow text-sm outline-none placeholder:text-gray-500 border border-transparent focus:border-gray-300 transition"
+              type="text"
+              placeholder="Add comment..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button
+              disabled={postCommentMutation.isLoading || !inputValue.trim()}
+              type="submit"
+              className={`transition ${
+                postCommentMutation.isLoading || !inputValue.trim()
+                  ? ""
+                  : "text-pink"
+              }`}
+            >
+              {postCommentMutation.isLoading ? "Posting..." : "Post"}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

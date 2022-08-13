@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { BsFillCloudUploadFill } from "react-icons/bs";
 
 import Navbar from "@/components/Layout/Navbar";
+import Meta from "@/components/Shared/Meta";
 import { fetchWithProgress } from "@/utils/fetch";
 
 import { trpc } from "../utils/trpc";
@@ -187,129 +188,134 @@ const Upload: NextPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-stretch">
-      <Navbar />
-      <div className="flex justify-center mx-2 flex-grow bg-gray-1">
-        <div className="w-full max-w-[1000px] p-8 bg-white my-4">
-          <h1 className="text-2xl font-bold">Upload video</h1>
-          <p className="text-gray-400 mt-2">Post a video to your account</p>
+    <>
+      <Meta title="Upload | TopTop" description="Upload" image="/favicon.png" />
+      <div className="min-h-screen flex flex-col items-stretch">
+        <Navbar />
+        <div className="flex justify-center mx-2 flex-grow bg-gray-1">
+          <div className="w-full max-w-[1000px] p-8 bg-white my-4">
+            <h1 className="text-2xl font-bold">Upload video</h1>
+            <p className="text-gray-400 mt-2">Post a video to your account</p>
 
-          <div className="flex items-start mt-10 gap-4">
-            {videoURL ? (
-              <video
-                className="w-[250px] h-[340px] object-contain"
-                muted
-                autoPlay
-                controls
-                src={videoURL}
-                playsInline
-              />
-            ) : (
-              <button
-                onDrop={dropFile}
-                onDragLeave={dragBlur}
-                onDragEnter={dragFocus}
-                onDragOver={dragFocus}
-                onClick={() => inputRef.current?.click()}
-                className={`w-[250px] flex-shrink-0 border-2 border-gray-300 rounded-md border-dashed flex flex-col items-center p-8 cursor-pointer hover:border-red-1 transition ${
-                  isFileDragging ? "border-red-1" : ""
-                }`}
-              >
-                <BsFillCloudUploadFill className="fill-[#B0B0B4] w-10 h-10" />
-                <h1 className="font-semibold mt-4 mb-2">
-                  Select video to upload
-                </h1>
-                <p className="text-gray-500 text-sm">Or drag and drop a file</p>
+            <div className="flex items-start mt-10 gap-4">
+              {videoURL ? (
+                <video
+                  className="w-[250px] h-[340px] object-contain"
+                  muted
+                  autoPlay
+                  controls
+                  src={videoURL}
+                  playsInline
+                />
+              ) : (
+                <button
+                  onDrop={dropFile}
+                  onDragLeave={dragBlur}
+                  onDragEnter={dragFocus}
+                  onDragOver={dragFocus}
+                  onClick={() => inputRef.current?.click()}
+                  className={`w-[250px] flex-shrink-0 border-2 border-gray-300 rounded-md border-dashed flex flex-col items-center p-8 cursor-pointer hover:border-red-1 transition ${
+                    isFileDragging ? "border-red-1" : ""
+                  }`}
+                >
+                  <BsFillCloudUploadFill className="fill-[#B0B0B4] w-10 h-10" />
+                  <h1 className="font-semibold mt-4 mb-2">
+                    Select video to upload
+                  </h1>
+                  <p className="text-gray-500 text-sm">
+                    Or drag and drop a file
+                  </p>
 
-                <div className="flex flex-col items-center text-gray-400 my-4 gap-1 text-sm">
-                  <p>MP4 or WebM</p>
-                  <p>Any resolution</p>
-                  <p>Any duration</p>
-                  <p>Less than 200MB</p>
-                </div>
+                  <div className="flex flex-col items-center text-gray-400 my-4 gap-1 text-sm">
+                    <p>MP4 or WebM</p>
+                    <p>Any resolution</p>
+                    <p>Any duration</p>
+                    <p>Less than 200MB</p>
+                  </div>
 
-                <div className="w-full bg-red-1 text-white p-2">
-                  Select file
-                </div>
-              </button>
-            )}
+                  <div className="w-full bg-red-1 text-white p-2">
+                    Select file
+                  </div>
+                </button>
+              )}
 
-            <input
-              ref={inputRef}
-              type="file"
-              hidden
-              className="hidden"
-              accept="video/mp4,video/webm"
-              onChange={(e) => {
-                if (e.target.files?.[0]) {
-                  handleFileChange(e.target.files[0]);
-                }
-              }}
-            />
-
-            <div className="flex-grow">
-              <label className="block font-medium" htmlFor="caption">
-                Caption
-              </label>
               <input
-                type="text"
-                id="caption"
-                className="p-2 w-full border border-gray-2 mt-1 mb-3 outline-none focus:border-gray-400 transition"
-                value={inputValue}
+                ref={inputRef}
+                type="file"
+                hidden
+                className="hidden"
+                accept="video/mp4,video/webm"
                 onChange={(e) => {
-                  if (!isLoading) setInputValue(e.target.value);
+                  if (e.target.files?.[0]) {
+                    handleFileChange(e.target.files[0]);
+                  }
                 }}
               />
 
-              <p className="font-medium">Cover</p>
-              <div className="p-2 border border-gray-2 h-[170px] mb-2">
-                {coverImageURL ? (
-                  <img
-                    className="h-full w-auto object-contain"
-                    src={coverImageURL}
-                    alt=""
-                  />
-                ) : (
-                  <div className="bg-gray-1 h-full w-[100px]"></div>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                <button
-                  disabled={isLoading}
-                  onClick={() => {
-                    if (inputRef.current?.value) inputRef.current.value = "";
-                    setCoverImageURL(null);
-                    setInputValue("");
-                    setVideoFile(null);
-                    setVideoURL(null);
+              <div className="flex-grow">
+                <label className="block font-medium" htmlFor="caption">
+                  Caption
+                </label>
+                <input
+                  type="text"
+                  id="caption"
+                  className="p-2 w-full border border-gray-2 mt-1 mb-3 outline-none focus:border-gray-400 transition"
+                  value={inputValue}
+                  onChange={(e) => {
+                    if (!isLoading) setInputValue(e.target.value);
                   }}
-                  className="py-3 min-w-[170px] border border-gray-2 bg-white hover:bg-gray-100 transition"
-                >
-                  Discard
-                </button>
-                <button
-                  onClick={() => handleUpload()}
-                  disabled={
-                    !inputValue.trim() ||
-                    !videoURL ||
-                    !videoFile ||
-                    !coverImageURL ||
-                    isLoading
-                  }
-                  className={`flex justify-center items-center gap-2 py-3 min-w-[170px] hover:brightness-90 transition text-white bg-red-1 disabled:text-gray-400 disabled:bg-gray-200`}
-                >
-                  {isLoading && (
-                    <span className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+                />
+
+                <p className="font-medium">Cover</p>
+                <div className="p-2 border border-gray-2 h-[170px] mb-2">
+                  {coverImageURL ? (
+                    <img
+                      className="h-full w-auto object-contain"
+                      src={coverImageURL}
+                      alt=""
+                    />
+                  ) : (
+                    <div className="bg-gray-1 h-full w-[100px]"></div>
                   )}
-                  Post
-                </button>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    disabled={isLoading}
+                    onClick={() => {
+                      if (inputRef.current?.value) inputRef.current.value = "";
+                      setCoverImageURL(null);
+                      setInputValue("");
+                      setVideoFile(null);
+                      setVideoURL(null);
+                    }}
+                    className="py-3 min-w-[170px] border border-gray-2 bg-white hover:bg-gray-100 transition"
+                  >
+                    Discard
+                  </button>
+                  <button
+                    onClick={() => handleUpload()}
+                    disabled={
+                      !inputValue.trim() ||
+                      !videoURL ||
+                      !videoFile ||
+                      !coverImageURL ||
+                      isLoading
+                    }
+                    className={`flex justify-center items-center gap-2 py-3 min-w-[170px] hover:brightness-90 transition text-white bg-red-1 disabled:text-gray-400 disabled:bg-gray-200`}
+                  >
+                    {isLoading && (
+                      <span className="w-4 h-4 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></span>
+                    )}
+                    Post
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

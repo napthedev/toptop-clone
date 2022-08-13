@@ -1,11 +1,13 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Image from "next/future/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { unstable_getServerSession as getServerSession } from "next-auth";
 import { FC, useState } from "react";
 import { BsPlay } from "react-icons/bs";
 
 import Navbar from "@/components/Layout/Navbar";
+import Meta from "@/components/Shared/Meta";
 import { prisma } from "@/server/db/client";
 import { formatAccountName } from "@/utils/text";
 
@@ -18,9 +20,15 @@ enum Tabs {
 
 const Search: FC<SearchProps> = ({ videos, accounts }) => {
   const [currentTab, setCurrentTab] = useState(Tabs.accounts);
+  const router = useRouter();
 
   return (
     <>
+      <Meta
+        title={`Find '${router.query.q}' on Toptop`}
+        description="TopTop Search"
+        image="/favicon.png"
+      />
       <Navbar />
       <div className="flex justify-center mx-4">
         <div className="w-full max-w-[1150px]">

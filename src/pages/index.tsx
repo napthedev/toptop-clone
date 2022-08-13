@@ -10,6 +10,7 @@ import superjson from "superjson";
 import Main from "@/components/Home/Main";
 import Sidebar from "@/components/Home/Sidebar";
 import Navbar from "@/components/Layout/Navbar";
+import Meta from "@/components/Shared/Meta";
 import { prisma } from "@/server/db/client";
 import { appRouter } from "@/server/router";
 
@@ -22,6 +23,11 @@ const Home: NextPage<HomeProps> = ({
 }) => {
   return (
     <>
+      <Meta
+        title="TopTop - Make Your Day"
+        description="TopTop - trends start here"
+        image="/favicon.png"
+      />
       <Navbar />
       <div className="flex justify-center mx-4">
         <div className="w-full max-w-[1150px] flex">

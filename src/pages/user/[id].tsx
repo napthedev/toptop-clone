@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { BsPlay } from "react-icons/bs";
 
 import Navbar from "@/components/Layout/Navbar";
+import Meta from "@/components/Shared/Meta";
 import { prisma } from "@/server/db/client";
 import { formatNumber } from "@/utils/number";
 import { formatAccountName } from "@/utils/text";
@@ -42,6 +43,12 @@ const UserProfile: NextPage<UserProfileProps> = ({ user }) => {
 
   return (
     <>
+      <Meta
+        title={`${user?.name} (@${formatAccountName(user?.name!)}) | TopTop`}
+        description={`${user?.name} on TopTop`}
+        image={user?.image!}
+      />
+
       <Navbar />
       <div className="flex justify-center mx-4">
         <div className="w-full max-w-[1150px]">
