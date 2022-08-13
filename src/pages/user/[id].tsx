@@ -102,7 +102,7 @@ const UserProfile: NextPage<UserProfileProps> = ({ user }) => {
           {user?.videos.length === 0 ? (
             <p className="text-center">There is no video here</p>
           ) : (
-            <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))]">
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(120px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))]">
               {user?.videos.map((video) => (
                 <div key={video.id}>
                   <Link href={`/video/${video.id}`}>

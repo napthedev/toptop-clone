@@ -92,14 +92,14 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
   };
 
   return (
-    <div key={video.id} className="flex items-start p-4 gap-3">
+    <div key={video.id} className="flex items-start p-2 lg:p-4 gap-3">
       <Link href={`/user/${video.user.id}`}>
         <a className="flex-shrink-0 rounded-full">
           <Image
             width={60}
             height={60}
             src={video.user.image!}
-            className="rounded-full"
+            className="rounded-full w-[30px] h-[30px] lg:w-[60px] lg:h-[60px]"
             alt=""
           />
         </a>
@@ -142,9 +142,9 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
             <a
               className={`${
                 video.videoHeight > video.videoWidth * 1.3
-                  ? "h-[600px]"
+                  ? "md:h-[600px]"
                   : "flex-grow h-auto"
-              } block rounded-md overflow-hidden`}
+              } block rounded-md overflow-hidden flex-grow h-auto md:flex-grow-0`}
             >
               <VideoPlayer
                 src={video.videoURL}
@@ -155,29 +155,31 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
               ></VideoPlayer>
             </a>
           </Link>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1 lg:gap-2">
             <button
               onClick={() => toggleLike()}
-              className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full"
+              className="lg:w-12 lg:h-12 w-7 h-7 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full"
             >
               <AiFillHeart
-                className={`w-7 h-7 ${isCurrentlyLiked ? "fill-pink" : ""}`}
+                className={`lg:w-7 lg:h-7 h-5 w-5 ${
+                  isCurrentlyLiked ? "fill-pink" : ""
+                }`}
               />
             </button>
             <p className="text-center text-xs font-semibold">
               {formatNumber(video._count.likes)}
             </p>
             <Link href={`/video/${video.id}`}>
-              <a className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                <FaCommentDots className="w-6 h-6 scale-x-[-1]" />
+              <a className="lg:w-12 lg:h-12 w-7 h-7 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
+                <FaCommentDots className="lg:w-6 lg:h-6 h-4 w-4 scale-x-[-1]" />
               </a>
             </Link>
             <p className="text-center text-xs font-semibold">
               {formatNumber(video._count.comments)}
             </p>
             <div className="relative group">
-              <button className="w-12 h-12 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
-                <IoIosShareAlt className="w-8 h-8" />
+              <button className="lg:w-12 lg:h-12 w-7 h-7 bg-[#F1F1F2] fill-black flex justify-center items-center rounded-full">
+                <IoIosShareAlt className="lg:w-8 lg:h-8 w-6 h-6" />
               </button>
               <div className="absolute bottom-[100%] right-0 rounded-md py-2 flex flex-col items-stretch bg-white border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
                 <a

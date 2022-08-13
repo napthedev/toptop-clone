@@ -91,7 +91,7 @@ const Search: FC<SearchProps> = ({ videos, accounts }) => {
               {videos?.length === 0 ? (
                 <p className="text-center my-5">No result found</p>
               ) : (
-                <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))]">
+                <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(120px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))]">
                   {videos?.map((video) => (
                     <div key={video.id}>
                       <Link href={`/video/${video.id}`}>

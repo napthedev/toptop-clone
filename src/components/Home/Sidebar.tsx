@@ -27,7 +27,7 @@ const Sidebar: FC<SidebarProps> = ({
   const session = useSession();
 
   return (
-    <div className="w-[348px] h-[calc(100vh-60px)] overflow-y-auto flex-shrink-0 py-5">
+    <div className="w-[48px] border-r lg:border-none lg:w-[348px] h-[calc(100vh-60px)] overflow-y-auto flex-shrink-0 py-5">
       <div className="flex flex-col items-stretch gap-5 [&_svg]:h-7 [&_svg]:w-7 font-semibold pb-6 border-b">
         <Link href="/">
           <a
@@ -38,7 +38,7 @@ const Sidebar: FC<SidebarProps> = ({
             }`}
           >
             {!router.query.following ? <AiFillHome /> : <AiOutlineHome />}
-            <span>For You</span>
+            <span className="hidden lg:inline">For You</span>
           </a>
         </Link>
         <Link href={session.data?.user ? "/?following=1" : "/sign-in"}>
@@ -54,14 +54,14 @@ const Sidebar: FC<SidebarProps> = ({
             ) : (
               <RiUserShared2Line />
             )}
-            <span>Following</span>
+            <span className="hidden lg:inline">Following</span>
           </a>
         </Link>
       </div>
 
       {suggestedAccounts.length > 0 && (
         <div className="flex flex-col items-stretch gap-3 py-4 border-b">
-          <p className="text-sm">Suggested Accounts</p>
+          <p className="text-sm hidden lg:block">Suggested Accounts</p>
           {suggestedAccounts.map((account) => (
             <Link href={`/user/${account.id}`} key={account.id}>
               <a className="flex items-center gap-3">
@@ -73,7 +73,7 @@ const Sidebar: FC<SidebarProps> = ({
                   alt=""
                 />
 
-                <div>
+                <div className="hidden lg:block">
                   <p className="relative leading-[1]">
                     <span className="font-semibold text-sm">
                       {formatAccountName(account.name!)}
@@ -116,7 +116,7 @@ const Sidebar: FC<SidebarProps> = ({
         </div>
       )}
 
-      <div className="[&_p]:cursor-pointer [&_p:hover]:underline text-xs leading-[1.2] mt-5 text-zinc-400 flex flex-col items-stretch gap-4">
+      <div className="[&_p]:cursor-pointer [&_p:hover]:underline text-xs leading-[1.2] mt-5 text-zinc-400 flex-col items-stretch gap-4 hidden lg:flex">
         <div className="flex flex-wrap gap-2">
           <p>About</p>
           <p>Newsroom</p>

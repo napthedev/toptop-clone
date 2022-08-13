@@ -107,10 +107,10 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
   if (!video) return <></>;
 
   return (
-    <div className="flex h-screen items-stretch">
-      <div className="flex-grow flex justify-center items-center relative bg-[#1E1619]">
+    <div className="flex flex-col lg:flex-row lg:h-screen items-stretch">
+      <div className="lg:flex-grow flex justify-center items-center relative bg-[#1E1619]">
         <video
-          className="w-auto h-auto max-w-full max-h-full"
+          className="w-auto h-auto max-w-full max-h-[600px] lg:max-h-full"
           src={video.videoURL}
           muted={isMuted}
           onVolumeChange={(e: any) => setIsMuted(e.target.muted)}
@@ -140,7 +140,7 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
           </Link>
         </div>
       </div>
-      <div className="w-[500px] flex-shrink-0 flex flex-col items-stretch h-screen">
+      <div className="w-full lg:w-[500px] flex-shrink-0 flex flex-col items-stretch h-screen">
         <div className="px-4 pt-6 pb-4 flex-shrink-0 border-b">
           <div className="flex">
             <Link href={`/user/${video.user.id}`}>
