@@ -65,6 +65,10 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
   };
 
   const toggleFollow = () => {
+    if (!session.data?.user) {
+      toast("You need to log in");
+      return;
+    }
     followMutation
       .mutateAsync({
         followingId: video.userId,
@@ -88,25 +92,29 @@ const VideoSection: FC<VideoSectionProps> = ({ video, refetch, origin }) => {
   };
 
   return (
-    <div key={video.id} className="flex p-4 gap-3">
-      <div className="flex-shrink-0">
-        <Image
-          width={60}
-          height={60}
-          src={video.user.image!}
-          className="rounded-full"
-          alt=""
-        />
-      </div>
+    <div key={video.id} className="flex items-start p-4 gap-3">
+      <Link href={`/user/${video.user.id}`}>
+        <a className="flex-shrink-0 rounded-full">
+          <Image
+            width={60}
+            height={60}
+            src={video.user.image!}
+            className="rounded-full"
+            alt=""
+          />
+        </a>
+      </Link>
       <div className="flex flex-col items-stretch gap-3 flex-grow">
         <div className="flex">
           <div className="flex-grow">
-            <p className="flex items-end gap-2">
-              <span className="font-bold">
+            <Link href={`/user/${video.user.id}`}>
+              <a className="font-bold hover:underline mr-1">
                 {formatAccountName(video.user.name!)}
-              </span>
-              <span className="text-sm">{video.user.name}</span>
-            </p>
+              </a>
+            </Link>
+            <Link href={`/user/${video.user.id}`}>
+              <a className="text-sm hover:underline">{video.user.name}</a>
+            </Link>
             <p style={{ wordWrap: "break-word", overflowWrap: "break-word" }}>
               {video.caption}
             </p>

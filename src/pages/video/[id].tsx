@@ -72,6 +72,10 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
   };
 
   const toggleFollow = () => {
+    if (!session.data?.user) {
+      toast("You need to log in");
+      return;
+    }
     followMutation.mutateAsync({
       followingId: video?.user.id!,
       isFollowed: !isCurrentlyFollowed,
@@ -139,18 +143,28 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
       <div className="w-[500px] flex-shrink-0 flex flex-col items-stretch h-screen">
         <div className="px-4 pt-6 pb-4 flex-shrink-0 border-b">
           <div className="flex">
-            <div className="mr-3">
-              <Image
-                src={video.user.image!}
-                alt=""
-                height={40}
-                width={40}
-                className="rounded-full"
-              />
-            </div>
+            <Link href={`/user/${video.user.id}`}>
+              <a className="mr-3 flex-shrink-0 rounded-full">
+                <Image
+                  src={video.user.image!}
+                  alt=""
+                  height={40}
+                  width={40}
+                  className="rounded-full"
+                />
+              </a>
+            </Link>
             <div className="flex-grow">
-              <p className="font-bold">{formatAccountName(video.user.name!)}</p>
-              <p className="text-sm">{video.user.name}</p>
+              <Link href={`/user/${video.user.id}`}>
+                <a className="font-bold block hover:underline">
+                  {formatAccountName(video.user.name!)}
+                </a>
+              </Link>
+              <Link href={`/user/${video.user.id}`}>
+                <a className="text-sm block hover:underline">
+                  {video.user.name}
+                </a>
+              </Link>
             </div>
             {/* @ts-ignore */}
             {video.user.id !== session.data?.user?.id && (
@@ -256,17 +270,23 @@ const Video: NextPage<VideoProps> = ({ video, href, title }) => {
         <div className="flex-grow flex flex-col items-stretch gap-3 overflow-y-auto bg-[#F8F8F8] p-5">
           {commentsQuery.data?.map((comment) => (
             <div key={comment.id} className="flex gap-2">
-              <div className="flex-shrink-0">
-                <Image
-                  src={comment.user.image!}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                  alt=""
-                />
-              </div>
+              <Link href={`/user/${comment.user.id}`}>
+                <a className="flex-shrink-0 rounded-full">
+                  <Image
+                    src={comment.user.image!}
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                    alt=""
+                  />
+                </a>
+              </Link>
               <div className="flex-grow">
-                <p className="font-bold">{comment.user.name}</p>
+                <Link href={`/user/${comment.user.id}`}>
+                  <a className="font-bold hover:underline">
+                    {comment.user.name}
+                  </a>
+                </Link>
                 <p
                   style={{
                     wordWrap: "break-word",
@@ -326,39 +346,21 @@ export const getServerSideProps = async ({
     if (!id) throw new Error();
 
     const video = await prisma.video.findFirstOrThrow({
-      where: {
-        id,
-      },
+      where: { id },
       select: {
         id: true,
         videoURL: true,
         coverURL: true,
         caption: true,
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            image: true,
-            name: true,
-          },
-        },
+        _count: { select: { likes: true } },
+        user: { select: { id: true, image: true, name: true } },
         comments: {
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
             content: true,
             createdAt: true,
-            user: {
-              select: {
-                id: true,
-                image: true,
-                name: true,
-              },
-            },
+            user: { select: { id: true, image: true, name: true } },
           },
         },
       },

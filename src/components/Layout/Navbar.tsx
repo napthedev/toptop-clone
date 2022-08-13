@@ -69,7 +69,8 @@ const Navbar: FC = () => {
                           : "opacity-0 invisible"
                       }`}
                     >
-                      <Link href="/profile">
+                      {/* @ts-ignore */}
+                      <Link href={`/user/${session?.user?.id}`}>
                         <a className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 transition">
                           <BiUser className="fill-black w-6 h-6" />
                           <span>Profile</span>

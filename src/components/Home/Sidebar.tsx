@@ -63,7 +63,7 @@ const Sidebar: FC<SidebarProps> = ({
         <div className="flex flex-col items-stretch gap-3 py-4 border-b">
           <p className="text-sm">Suggested Accounts</p>
           {suggestedAccounts.map((account) => (
-            <Link href={`/account/${account.id}`} key={account.id}>
+            <Link href={`/user/${account.id}`} key={account.id}>
               <a className="flex items-center gap-3">
                 <Image
                   className="rounded-full object-cover"
@@ -91,7 +91,7 @@ const Sidebar: FC<SidebarProps> = ({
         <div className="flex flex-col items-stretch gap-3 py-4 border-b">
           <p className="text-sm">Following Accounts</p>
           {followingAccounts.map((account) => (
-            <Link href={`/account/${account.id}`} key={account.id}>
+            <Link href={`/user/${account.id}`} key={account.id}>
               <a className="flex items-center gap-3">
                 <Image
                   className="rounded-full object-cover"
